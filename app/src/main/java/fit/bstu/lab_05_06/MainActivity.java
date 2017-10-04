@@ -5,7 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import fit.bstu.lab_05_06.chain_of_activities.MainActivityOfChain;
+
 public class MainActivity extends AppCompatActivity {
+
+    //private ChainOfActivitiesController<String> chain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onButtonClick(View v) {
-        Intent intent = new Intent(this, NameInputActivity.class);
+        Intent intent = new Intent(this, MainActivityOfChain.class);
         startActivity(intent);
     }
 }
