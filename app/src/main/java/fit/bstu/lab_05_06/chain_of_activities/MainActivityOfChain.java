@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import fit.bstu.lab_05_06.R;
+import fit.bstu.lab_05_06.chain_of_activities.architecture.ChainInstance;
+import fit.bstu.lab_05_06.chain_of_activities.architecture.ChainOfActivitiesController;
 import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.NameInputFragment;
 
 /**
@@ -15,15 +17,12 @@ import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.NameInputFragment;
  */
 
 public class MainActivityOfChain extends AppCompatActivity {
-    public NameInputFragment testFragment = new NameInputFragment();
-
+    private ChainOfActivitiesController<String> chainController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chain_main);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frameLayout, testFragment);
-        fragmentTransaction.commit();
+        chainController = new ChainOfActivitiesController(this, R.id.frameLayout, "Hello");
+        chainController.startChain();
     }
 }

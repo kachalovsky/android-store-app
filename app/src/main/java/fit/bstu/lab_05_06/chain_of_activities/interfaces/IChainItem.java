@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06;
+package fit.bstu.lab_05_06.chain_of_activities.interfaces;
 
 import android.content.Context;
 
