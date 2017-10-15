@@ -1,20 +1,18 @@
 package fit.bstu.lab_05_06.chain_of_activities;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import fit.bstu.lab_05_06.Product;
+import fit.bstu.lab_05_06.models.Product;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.chain_of_activities.architecture.ChainOfActivitiesController;
 import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.count_fragment.CountInputFragment;
 import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.image_fragment.ImageInputFragment;
 import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.name_fragment.NameInputFragment;
 import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.price_fragment.PriceInputFragment;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainItem;
 import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainParent;
 
 /**

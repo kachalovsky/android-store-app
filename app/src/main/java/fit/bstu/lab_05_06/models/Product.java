@@ -1,4 +1,8 @@
-package fit.bstu.lab_05_06;
+package fit.bstu.lab_05_06.models;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.os.Bundle;
 
 import java.io.Serializable;
 
@@ -57,5 +61,29 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
     @Override
     public void setImagePath(String imgPath) {
         this.imgPath = imgPath;
+    }
+
+    public static Product newInstance(Cursor cursor) {
+        String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+        Double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+        int count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
+        String imgPath = cursor.getString(cursor.getColumnIndexOrThrow("img_path"));
+
+        Product product = new Product();
+        product.setName(name);
+        product.setImagePath(imgPath);
+        product.setCount(count);
+        product.setPrice(price);
+
+        return product;
+    }
+
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("price", price);
+        values.put("count", count);
+        values.put("img_path", imgPath);
+        return values;
     }
 }

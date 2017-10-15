@@ -71,11 +71,13 @@ public class ImageInputFragment<Type extends IImageInputItem> extends BaseInputF
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
-            IImageInputItem item = (IImageInputItem) getDelegate().passData();
-            item.setImagePath(picturePath);
-            getDelegate().dataDidChange(item);
-            ImageView imageView = (ImageView) getView().findViewById(R.id.img_select);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            if (picturePath != null) {
+                IImageInputItem item = (IImageInputItem) getDelegate().passData();
+                item.setImagePath(picturePath);
+                getDelegate().dataDidChange(item);
+                ImageView imageView = (ImageView) getView().findViewById(R.id.img_select);
+                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import fit.bstu.lab_05_06.Product;
+import fit.bstu.lab_05_06.models.Product;
 import fit.bstu.lab_05_06.R;
 
 /**
