@@ -8,22 +8,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import java.io.Serializable;
+
 import fit.bstu.lab_05_06.chain_of_activities.MainActivityOfChain;
+import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncWriteCompletion;
 import fit.bstu.lab_05_06.db.ProductDBHelper;
 import fit.bstu.lab_05_06.db.ProductsCursorAdapter;
+import fit.bstu.lab_05_06.db.ProductsManager;
 import fit.bstu.lab_05_06.models.Product;
 import fit.bstu.lab_05_06.products_list.ProductsListAdapter;
 
 public class MainActivity extends AppCompatActivity {
     ProductsCursorAdapter productAdapter;
     ListView productsListView;
-    ProductDBHelper dbHelper;
+    ProductsManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbHelper = new ProductDBHelper(this);
+        dbManager = new ProductsManager(this);
         prepareListOfProducts();
     }
 
@@ -31,40 +35,39 @@ public class MainActivity extends AppCompatActivity {
         productsListView = (ListView)findViewById(R.id.listView);
         //productListAdapter = new ProductsListAdapter(this, R.layout.product_list_item);
         try{
-            productAdapter = new ProductsCursorAdapter(this, fetchCursor(), R.layout.product_list_item);
-            productsListView.setAdapter(productAdapter);
-
+            dbManager.getProducts(null, null, newCursor -> {
+                productAdapter = new ProductsCursorAdapter(this, newCursor, R.layout.product_list_item);
+                productsListView.setAdapter(productAdapter);
+            });
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Cursor fetchCursor() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor productCursor = db.rawQuery("SELECT * FROM products", null);
-        return productCursor;
-    }
-
     public void onButtonClick(View v) {
+
         Intent intent = new Intent(this, MainActivityOfChain.class);
-        intent.putExtra(MainActivityOfChain.RESULT_KEY, new Product());
         startActivityForResult(intent, 0);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Product product = (Product)data.getSerializableExtra(MainActivityOfChain.RESULT_KEY);
+        if (resultCode != RESULT_OK) return;
+        Serializable createdProduct = data.getSerializableExtra(MainActivityOfChain.CREATED_KEY);
+        Serializable editedProduct = data.getSerializableExtra(MainActivityOfChain.UPDATED_KEY);
+        IAsyncWriteCompletion copmletion = () -> {
+            dbManager.getProducts(null, null, (newCursor) -> {
+                productAdapter.changeCursor(newCursor);
+            });
+        };
+        if (createdProduct != null) {
+            Product product = (Product)createdProduct;
+            dbManager.insert(product, copmletion);
+        }
 
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            try{
-                db.insertOrThrow("products", null, product.getValues());
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-            dbHelper.close();
-            productAdapter.changeCursor(fetchCursor());
+        if (editedProduct != null) {
+            Product product = (Product)editedProduct;
+            dbManager.update(product, copmletion);
         }
     }
 }

@@ -23,6 +23,16 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
     //private String category;
     private String imgPath;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
+
     @Override
     public Double getPrice() {
         return price;
@@ -68,12 +78,14 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         Double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
         int count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
         String imgPath = cursor.getString(cursor.getColumnIndexOrThrow("img_path"));
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
 
         Product product = new Product();
         product.setName(name);
         product.setImagePath(imgPath);
         product.setCount(count);
         product.setPrice(price);
+        product.setId(id);
 
         return product;
     }

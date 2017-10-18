@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.BaseInputFragment;
 import fit.bstu.lab_05_06.models.Product;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.chain_of_activities.architecture.ChainOfActivitiesController;
@@ -20,7 +21,10 @@ import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainParent;
  */
 
 public class MainActivityOfChain extends AppCompatActivity implements IChainParent<Product> {
-    public static String RESULT_KEY = "RESULT";
+
+    public static String CREATED_KEY = "RESULT_CREATED";
+    public static String UPDATED_KEY = "RESULT_UPDATED";
+    private String currentKey = CREATED_KEY;
     private ChainOfActivitiesController chainController;
     private Product product = new Product();
     private boolean isCancelBehavior = true;
@@ -30,6 +34,8 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chain_main);
         setListeners();
+        Product sendedProduct = (Product) getIntent().getSerializableExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY);
+        if (sendedProduct != null) {product = sendedProduct; currentKey = UPDATED_KEY;}
         chainController = new ChainOfActivitiesController(this, R.id.frameLayout);
         chainController.appendChainItem(NameInputFragment.newInstance(this));
         chainController.appendChainItem(PriceInputFragment.newInstance(this));
@@ -63,7 +69,7 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
 
     private void finishWithData() {
         Intent intent = new Intent();
-        intent.putExtra(RESULT_KEY, product);
+        intent.putExtra(currentKey, product);
         setResult(RESULT_OK, intent);
         cancelActivity();
     }
