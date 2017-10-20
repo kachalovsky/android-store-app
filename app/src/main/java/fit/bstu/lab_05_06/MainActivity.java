@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         IAsyncWriteCompletion copmletion = () -> {
             dbManager.getProducts(null, null, (newCursor) -> {
                 productAdapter.changeCursor(newCursor);
+                productAdapter.notifyDataSetChanged();
             });
         };
         if (createdProduct != null) {

@@ -27,12 +27,16 @@ public class ProductsManager {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
                     db.insertOrThrow("products", null, product.getValues());
-                    completion.OnComplete();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 dbHelper.close();
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void param) {
+                completion.OnComplete();
             }
         };
         task.execute();
@@ -45,18 +49,22 @@ public class ProductsManager {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
                     db.update("products", product.getValues(), "_id=" + product.getId(), null);
-                    completion.OnComplete();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 dbHelper.close();
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void param) {
+                completion.OnComplete();
+            }
         };
         task.execute();
     }
 
-    public void delete(Product product) {
+    public void delete(Product product, IAsyncWriteCompletion completion) {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -69,27 +77,36 @@ public class ProductsManager {
                 dbHelper.close();
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void param) {
+                completion.OnComplete();
+            }
         };
         task.execute();
     }
 
     public void getProducts(final String where, final String order, IAsyncReadCompletion completion) {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+        AsyncTask<Void, Void, Cursor> task = new AsyncTask<Void, Void, Cursor>() {
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Cursor doInBackground(Void... params) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
                     String query = "SELECT * FROM products";
                     if (where != null && where.length() > 0) query += " WHERE " + where;
                     if (order != null && order.length() > 0) query += " ORDER BY  " + order;
                     query += ";";
-                    Cursor productCursor = db.rawQuery(query, null);
-                    completion.OnComplete(productCursor);
+                    return db.rawQuery(query, null);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 dbHelper.close();
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Cursor result) {
+                completion.OnComplete(result);
             }
         };
         task.execute();

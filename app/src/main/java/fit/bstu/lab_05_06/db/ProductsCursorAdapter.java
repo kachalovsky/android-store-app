@@ -59,10 +59,11 @@ public class ProductsCursorAdapter extends CursorAdapter {
         final Product product = Product.newInstance(cursor);
         final ProductsCursorAdapter adapter = this;
         deleteBtn.setOnClickListener(v -> {
-            dbManager.delete(product);
-            dbManager.getProducts(null, null, (newCursor) -> {
-                adapter.changeCursor(newCursor);
-                adapter.notifyDataSetChanged();
+            dbManager.delete(product, () -> {
+                dbManager.getProducts(null, null, (newCursor) -> {
+                    adapter.changeCursor(newCursor);
+                    adapter.notifyDataSetChanged();
+                });
             });
         });
 
