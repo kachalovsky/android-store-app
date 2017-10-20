@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import fit.bstu.lab_05_06.R;
-import fit.bstu.lab_05_06.chain_of_activities.MainActivityOfChain;
-import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.BaseInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
 import fit.bstu.lab_05_06.models.Product;
 
 /**

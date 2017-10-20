@@ -1,39 +1,56 @@
 package fit.bstu.lab_05_06;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.Serializable;
 
-import fit.bstu.lab_05_06.chain_of_activities.MainActivityOfChain;
+import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncReadCompletion;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncWriteCompletion;
-import fit.bstu.lab_05_06.db.ProductDBHelper;
 import fit.bstu.lab_05_06.db.ProductsCursorAdapter;
 import fit.bstu.lab_05_06.db.ProductsManager;
 import fit.bstu.lab_05_06.models.Product;
-import fit.bstu.lab_05_06.products_list.ProductsListAdapter;
+import fit.bstu.lab_05_06.shared_modules.order_controller.OrderController;
 
 public class MainActivity extends AppCompatActivity {
+    enum OrderType {
+        COUNT,
+        PRICE
+    }
+
     ProductsCursorAdapter productAdapter;
     ListView productsListView;
     ProductsManager dbManager;
+    OrderController<OrderType> priceOrderController;
+    OrderController<OrderType> countOrderController;
+    OrderController<OrderType> currentOrderController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbManager = new ProductsManager(this);
+        priceOrderController = new OrderController(OrderType.PRICE, "Price");
+        countOrderController = new OrderController(OrderType.COUNT, "Count");
+        currentOrderController = priceOrderController;
         prepareListOfProducts();
+        setListenersForOrderBtns();
+//
+//        ProgressDialog progress = new ProgressDialog(this);
+//        progress.setTitle("Loading");
+//        progress.setMessage("Wait while loading...");
+//        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+//        progress.show();
     }
 
     private void prepareListOfProducts() {
         productsListView = (ListView)findViewById(R.id.listView);
-        //productListAdapter = new ProductsListAdapter(this, R.layout.product_list_item);
         try{
             dbManager.getProducts(null, null, newCursor -> {
                 productAdapter = new ProductsCursorAdapter(this, newCursor, R.layout.product_list_item);
@@ -44,10 +61,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onButtonClick(View v) {
+    private void setListenersForOrderBtns() {
+        Button priceBtn = (Button)findViewById(R.id.btn_sort_price);
+        Button countBtn = (Button)findViewById(R.id.btn_sort_count);
+        priceBtn.setOnClickListener(v -> {
+            currentOrderController = priceOrderController;
+            currentOrderController.nextState();
+            refreshListViewByCurrentOrder(newCursor -> {
+//                ListView lw = (ListView) findViewById(R.id.listView);
+//                lw.invalidateViews();
+                productAdapter.changeCursor(newCursor);
+                productAdapter.notifyDataSetChanged();
+//                productAdapter.notifyDataSetChanged();
+//                ListView lw = (ListView) findViewById(R.id.listView);
+//                lw.invalidateViews();
+            });
+        });
 
+        countBtn.setOnClickListener(v -> {
+            currentOrderController = countOrderController;
+            currentOrderController.nextState();
+            refreshListViewByCurrentOrder(newCursor -> {
+                productAdapter.swapCursor(newCursor);
+            });
+        });
+    }
+
+    public void onButtonClick(View v) {
         Intent intent = new Intent(this, MainActivityOfChain.class);
         startActivityForResult(intent, 0);
+    }
+
+    private void refreshListViewByOrder(String orderItem, OrderController.States state, IAsyncReadCompletion completion) {
+        switch (state) {
+            case UP:
+                dbManager.getProducts(null, orderItem, completion);
+                break;
+            case DOWN:
+                dbManager.getProducts(null, orderItem +" DESC", completion);
+                break;
+            case UNSELECT:
+                dbManager.getProducts(null, null, completion);
+                break;
+        }
+    }
+
+    private void refreshListViewByCurrentOrder(IAsyncReadCompletion completion) {
+        switch (currentOrderController.getOrderType()) {
+            case PRICE:
+                refreshListViewByOrder("price", currentOrderController.getState(), completion);
+                Button btnPrice = (Button) findViewById(R.id.btn_sort_price);
+                btnPrice.setText(currentOrderController.getOrderName());
+                break;
+            case COUNT:
+                refreshListViewByOrder("count", currentOrderController.getState(), completion);
+                Button btnCount = (Button) findViewById(R.id.btn_sort_count);
+                btnCount.setText(currentOrderController.getOrderName());
+                break;
+        }
     }
 
     @Override
@@ -56,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         Serializable createdProduct = data.getSerializableExtra(MainActivityOfChain.CREATED_KEY);
         Serializable editedProduct = data.getSerializableExtra(MainActivityOfChain.UPDATED_KEY);
         IAsyncWriteCompletion copmletion = () -> {
-            dbManager.getProducts(null, null, (newCursor) -> {
+            refreshListViewByCurrentOrder((newCursor) -> {
                 productAdapter.changeCursor(newCursor);
                 productAdapter.notifyDataSetChanged();
             });

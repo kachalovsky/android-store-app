@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.chain_of_activities.chain_fragments.count_fragment;
+package fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.count_fragment;
 
 
 import android.app.Fragment;
@@ -9,9 +9,8 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import fit.bstu.lab_05_06.R;
-import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.BaseInputFragment;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainItem;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainParent;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainParent;
 
 /**
  * Created by andre on 04.10.2017.
