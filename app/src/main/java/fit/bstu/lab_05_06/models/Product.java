@@ -28,7 +28,7 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         isSaved = saved;
     }
 
-    private Boolean isSaved;
+    private Boolean isSaved = false;
     private String imgPath;
 
     public long getId() {

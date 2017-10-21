@@ -55,9 +55,15 @@ public class PriceInputFragment<Type extends IPriceInputItem> extends BaseInputF
             public void afterTextChanged(Editable s) {
                 IChainParent delegate = getDelegate();
                 IPriceInputItem item = (IPriceInputItem) delegate.passData();
-                Double price = (Double.parseDouble(s.toString()));
-                item.setPrice(price);
-                delegate.dataDidChange(item);
+                try{
+
+                    Double price = (Double.parseDouble(s.toString()));
+                    item.setPrice(price);
+                    delegate.dataDidChange(item);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
