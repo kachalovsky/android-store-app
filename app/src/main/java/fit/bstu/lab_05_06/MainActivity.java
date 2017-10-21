@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import java.io.Serializable;
 
+import fit.bstu.lab_05_06.auth.AuthActivity;
 import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncReadCompletion;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncWriteCompletion;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
             });
         });
         saveBtn.setOnClickListener(v -> {
+            Intent auth = new Intent(this, AuthActivity.class);
+                    startActivity(auth);
             if (currentWhere == null) {
                 currentWhere = "is_saved=1";
                 v.setBackgroundColor(getResources().getColor(R.color.colorPicker));
