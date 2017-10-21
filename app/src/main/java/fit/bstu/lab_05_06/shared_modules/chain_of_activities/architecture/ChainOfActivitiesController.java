@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.chain_of_activities.architecture;
+package fit.bstu.lab_05_06.shared_modules.chain_of_activities.architecture;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -8,7 +8,7 @@ import android.app.FragmentTransaction;
 import java.util.ArrayList;
 
 import fit.bstu.lab_05_06.R;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainParent;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainParent;
 
 /**
  * Created by andre on 28.09.2017.

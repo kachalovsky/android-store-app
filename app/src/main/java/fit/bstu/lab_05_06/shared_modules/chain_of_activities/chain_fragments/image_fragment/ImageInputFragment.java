@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.chain_of_activities.chain_fragments.image_fragment;
+package fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.image_fragment;
 
 
 import android.app.Fragment;
@@ -12,12 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 
 import fit.bstu.lab_05_06.R;
-import fit.bstu.lab_05_06.chain_of_activities.chain_fragments.BaseInputFragment;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainItem;
-import fit.bstu.lab_05_06.chain_of_activities.interfaces.IChainParent;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainParent;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -71,11 +69,13 @@ public class ImageInputFragment<Type extends IImageInputItem> extends BaseInputF
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
-            IImageInputItem item = (IImageInputItem) getDelegate().passData();
-            item.setImagePath(picturePath);
-            getDelegate().dataDidChange(item);
-            ImageView imageView = (ImageView) getView().findViewById(R.id.img_select);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            if (picturePath != null) {
+                IImageInputItem item = (IImageInputItem) getDelegate().passData();
+                item.setImagePath(picturePath);
+                getDelegate().dataDidChange(item);
+                ImageView imageView = (ImageView) getView().findViewById(R.id.img_select);
+                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            }
         }
     }
 }

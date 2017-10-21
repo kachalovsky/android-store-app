@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fit.bstu.lab_05_06.chain_of_activities.MainActivityOfChain">
+    tools:context=".shared_modules.chain_of_activities.MainActivityOfChain">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
