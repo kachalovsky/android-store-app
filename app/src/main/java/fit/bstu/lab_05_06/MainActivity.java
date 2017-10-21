@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import java.io.Serializable;
 
+
 import fit.bstu.lab_05_06.auth.AuthActivity;
 import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncReadCompletion;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
