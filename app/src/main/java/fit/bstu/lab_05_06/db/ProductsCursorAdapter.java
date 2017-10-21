@@ -14,6 +14,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import fit.bstu.lab_05_06.MainActivity;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
@@ -56,24 +57,39 @@ public class ProductsCursorAdapter extends CursorAdapter {
 
         Button deleteBtn = (Button) view.findViewById(R.id.product_list_item_btn_del);
         Button editBtn = (Button) view.findViewById(R.id.product_list_item_btn_edit);
-        final Product product = Product.newInstance(cursor);
+        Button saveBtn = (Button) view.findViewById(R.id.product_list_item_btn_save);
+
+        Product product = Product.newInstance(cursor);
+
+        saveBtn.setText(product.getSaved() ? "Unsave" : "Save");
+
         final ProductsCursorAdapter adapter = this;
-        deleteBtn.setOnClickListener(v -> {
-            dbManager.delete(product, () -> {
-                dbManager.getProducts(null, null, (newCursor) -> {
-                    adapter.changeCursor(newCursor);
-                    adapter.notifyDataSetChanged();
+
+        saveBtn.setOnClickListener(v -> {
+            product.setSaved(!product.getSaved());
+            dbManager.update(product, () -> {
+                MainActivity activity = (MainActivity) mainContext;
+                activity.refreshListViewByCurrentOrder((newCursor) -> {
+                    changeCursor(newCursor);
+                    notifyDataSetChanged();
                 });
             });
         });
 
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainContext, MainActivityOfChain.class);
-                intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, product);
-                ((Activity)mainContext).startActivityForResult(intent, 0);
-            }
+        deleteBtn.setOnClickListener(v -> {
+            dbManager.delete(product, () -> {
+                MainActivity activity = (MainActivity) mainContext;
+                activity.refreshListViewByCurrentOrder((newCursor) -> {
+                    changeCursor(newCursor);
+                    notifyDataSetChanged();
+                });
+            });
+        });
+
+        editBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(mainContext, MainActivityOfChain.class);
+            intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, product);
+            ((Activity)mainContext).startActivityForResult(intent, 0);
         });
 
         double price = product.getPrice();

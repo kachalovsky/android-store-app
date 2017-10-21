@@ -19,7 +19,16 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
     private String name;
     private Double price;
     private Integer count;
-    //private String category;
+
+    public Boolean getSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(Boolean saved) {
+        isSaved = saved;
+    }
+
+    private Boolean isSaved;
     private String imgPath;
 
     public long getId() {
@@ -78,6 +87,7 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         int count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
         String imgPath = cursor.getString(cursor.getColumnIndexOrThrow("img_path"));
         long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+        boolean isSaved = cursor.getInt(cursor.getColumnIndexOrThrow("is_saved")) != 0;
 
         Product product = new Product();
         product.setName(name);
@@ -85,6 +95,7 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         product.setCount(count);
         product.setPrice(price);
         product.setId(id);
+        product.setSaved(isSaved);
 
         return product;
     }
@@ -95,6 +106,7 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         values.put("price", price);
         values.put("count", count);
         values.put("img_path", imgPath);
+        values.put("is_saved", isSaved ? 1 : 0);
         return values;
     }
 }

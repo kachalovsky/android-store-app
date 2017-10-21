@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     ProductsCursorAdapter productAdapter;
     ListView productsListView;
     ProductsManager dbManager;
+    String currentWhere = null;
     OrderController<OrderType> priceOrderController;
     OrderController<OrderType> countOrderController;
     OrderController<OrderType> currentOrderController;
@@ -41,12 +42,6 @@ public class MainActivity extends AppCompatActivity {
         currentOrderController = priceOrderController;
         prepareListOfProducts();
         setListenersForOrderBtns();
-//
-//        ProgressDialog progress = new ProgressDialog(this);
-//        progress.setTitle("Loading");
-//        progress.setMessage("Wait while loading...");
-//        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-//        progress.show();
     }
 
     private void prepareListOfProducts() {
@@ -64,23 +59,32 @@ public class MainActivity extends AppCompatActivity {
     private void setListenersForOrderBtns() {
         Button priceBtn = (Button)findViewById(R.id.btn_sort_price);
         Button countBtn = (Button)findViewById(R.id.btn_sort_count);
+        Button saveBtn = (Button)findViewById(R.id.btn_sort_save);
         priceBtn.setOnClickListener(v -> {
             currentOrderController = priceOrderController;
             currentOrderController.nextState();
             refreshListViewByCurrentOrder(newCursor -> {
-//                ListView lw = (ListView) findViewById(R.id.listView);
-//                lw.invalidateViews();
                 productAdapter.changeCursor(newCursor);
                 productAdapter.notifyDataSetChanged();
-//                productAdapter.notifyDataSetChanged();
-//                ListView lw = (ListView) findViewById(R.id.listView);
-//                lw.invalidateViews();
             });
         });
-
         countBtn.setOnClickListener(v -> {
             currentOrderController = countOrderController;
             currentOrderController.nextState();
+            refreshListViewByCurrentOrder(newCursor -> {
+                productAdapter.swapCursor(newCursor);
+            });
+        });
+        saveBtn.setOnClickListener(v -> {
+            if (currentWhere == null) {
+                currentWhere = "is_saved=1";
+                v.setBackgroundColor(getResources().getColor(R.color.colorPicker));
+            }
+            else {
+                currentWhere = null;
+                v.setBackgroundColor(getResources().getColor(R.color.transparent));
+
+            }
             refreshListViewByCurrentOrder(newCursor -> {
                 productAdapter.swapCursor(newCursor);
             });
@@ -95,18 +99,18 @@ public class MainActivity extends AppCompatActivity {
     private void refreshListViewByOrder(String orderItem, OrderController.States state, IAsyncReadCompletion completion) {
         switch (state) {
             case UP:
-                dbManager.getProducts(null, orderItem, completion);
+                dbManager.getProducts(currentWhere, orderItem, completion);
                 break;
             case DOWN:
-                dbManager.getProducts(null, orderItem +" DESC", completion);
+                dbManager.getProducts(currentWhere, orderItem +" DESC", completion);
                 break;
             case UNSELECT:
-                dbManager.getProducts(null, null, completion);
+                dbManager.getProducts(currentWhere, null, completion);
                 break;
         }
     }
 
-    private void refreshListViewByCurrentOrder(IAsyncReadCompletion completion) {
+    public void refreshListViewByCurrentOrder(IAsyncReadCompletion completion) {
         switch (currentOrderController.getOrderType()) {
             case PRICE:
                 refreshListViewByOrder("price", currentOrderController.getState(), completion);
