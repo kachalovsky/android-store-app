@@ -6,4 +6,5 @@ package fit.bstu.lab_05_06;
 
 public class Constants {
     public static final int SQL_LITE_DB_CURRENT_VERSION = 2;
+    public static int RC_SIGN_IN = 100;
 }
