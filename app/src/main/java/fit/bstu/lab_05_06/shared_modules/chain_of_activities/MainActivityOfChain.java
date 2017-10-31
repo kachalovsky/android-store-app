@@ -47,23 +47,17 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
 
     public void setListeners() {
         Button nextBtn = (Button) findViewById(R.id.next_button);
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isFinishBehavior) {
-                    chainController.nextItem();
-                } else {finishWithData();}
-            }
+        nextBtn.setOnClickListener(v -> {
+            if (!isFinishBehavior) {
+                chainController.nextItem();
+            } else {finishWithData();}
         });
         Button backBtn = (Button) findViewById(R.id.back_button);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!isCancelBehavior) {
-                    setResult(RESULT_CANCELED);
-                    chainController.previewItem();
-                } else {cancelActivity();}
-            }
+        backBtn.setOnClickListener(v -> {
+            if(!isCancelBehavior) {
+                setResult(RESULT_CANCELED);
+                chainController.previewItem();
+            } else {cancelActivity();}
         });
     }
 

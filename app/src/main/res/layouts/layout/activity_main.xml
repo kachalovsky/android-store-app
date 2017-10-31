@@ -7,17 +7,56 @@
     tools:context="fit.bstu.lab_05_06.MainActivity">
 
     <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/constraintLayout5"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="91dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="7dp"
+            android:layout_marginRight="7dp"
+            android:background="@android:color/background_light"
+            android:text="Log Out"
+            android:textColor="@color/colorPrimary"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/lbl_email_info"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lbl_email_info"
+            tools:layout_editor_absoluteX="270dp" />
+
+        <TextView
+            android:id="@+id/lbl_email_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_logout"
+            android:layout_marginRight="16dp"
+            app:layout_constraintVertical_bias="0.0" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:background="@color/colorPrimary"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
         <Button
             android:id="@+id/btn_sort_save"
@@ -28,7 +67,9 @@
             android:text="Saved"
             android:textColor="@android:color/background_light"
             app:layout_constraintRight_toLeftOf="@+id/btn_sort_count"
-            tools:layout_editor_absoluteY="0dp" />
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp" />
 
         <Button
             android:id="@+id/btn_sort_count"
@@ -39,7 +80,10 @@
             android:text="Count"
             android:textColor="@android:color/background_light"
             app:layout_constraintRight_toLeftOf="@+id/btn_sort_price"
-            tools:layout_editor_absoluteY="0dp" />
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_sort_save"
+            app:layout_constraintTop_toTopOf="@+id/btn_sort_save"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/btn_sort_price"
@@ -50,7 +94,10 @@
             android:text="Price"
             android:textColor="@android:color/background_light"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="0dp" />
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="@+id/btn_sort_count"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_sort_count"
+            app:layout_constraintVertical_bias="0.0" />
     </android.support.constraint.ConstraintLayout>
 
     <Button
@@ -72,8 +119,6 @@
         android:id="@+id/listView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
