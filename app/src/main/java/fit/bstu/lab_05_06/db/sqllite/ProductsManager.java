@@ -1,13 +1,13 @@
-package fit.bstu.lab_05_06.db;
+package fit.bstu.lab_05_06.db.sqllite;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncReadCompletion;
-import fit.bstu.lab_05_06.db.AsyncTasks.IAsyncWriteCompletion;
-import fit.bstu.lab_05_06.models.Product;
+import fit.bstu.lab_05_06.db.sqllite.AsyncTasks.IAsyncReadCompletion;
+import fit.bstu.lab_05_06.db.sqllite.AsyncTasks.IAsyncWriteCompletion;
+import fit.bstu.lab_05_06.models.Product.ProductModel;
 
 /**
  * Created by andre on 16.10.2017.
@@ -20,13 +20,13 @@ public class ProductsManager {
         dbHelper = new ProductDBHelper(context);
     }
 
-    public void insert(Product product, IAsyncWriteCompletion completion) {
+    public void insert(ProductModel productModel, IAsyncWriteCompletion completion) {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
-                    db.insertOrThrow("products", null, product.getValues());
+                    db.insertOrThrow("products", null, productModel.getValues());
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -42,13 +42,13 @@ public class ProductsManager {
         task.execute();
     }
 
-    public void update(Product product, IAsyncWriteCompletion completion) {
+    public void update(ProductModel productModel, IAsyncWriteCompletion completion) {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
-                    db.update("products", product.getValues(), "_id=" + product.getId(), null);
+                    db.update("products", productModel.getValues(), "_id=" + productModel.getIdentifier(), null);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -64,13 +64,13 @@ public class ProductsManager {
         task.execute();
     }
 
-    public void delete(Product product, IAsyncWriteCompletion completion) {
+    public void delete(ProductModel productModel, IAsyncWriteCompletion completion) {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 try{
-                    db.delete("products", "_id=" + product.getId(), null);
+                    db.delete("products", "_id=" + productModel.getIdentifier(), null);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.db.AsyncTasks;
+package fit.bstu.lab_05_06.db.sqllite.AsyncTasks;
 
 import android.database.Cursor;
 

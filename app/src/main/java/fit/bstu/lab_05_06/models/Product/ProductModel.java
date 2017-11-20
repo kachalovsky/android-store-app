@@ -1,7 +1,9 @@
-package fit.bstu.lab_05_06.models;
+package fit.bstu.lab_05_06.models.Product;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
@@ -15,10 +17,32 @@ import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainIt
  * Created by andre on 07.10.2017.
  */
 
-public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICountInputItem, IImageInputItem, Serializable {
+@IgnoreExtraProperties
+public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem, ICountInputItem, IImageInputItem, Serializable {
+
+    private String identifier;
     private String name;
+    private String userEmail;
     private Double price;
     private Integer count;
+    private Boolean isSaved = false;
+    private String imgPath;
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
 
     public Boolean getSaved() {
         return isSaved;
@@ -28,18 +52,14 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         isSaved = saved;
     }
 
-    private Boolean isSaved = false;
-    private String imgPath;
-
-    public long getId() {
-        return id;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
-    private long id;
 
     @Override
     public Double getPrice() {
@@ -81,32 +101,53 @@ public class Product implements IChainItem, INameInputItem, IPriceInputItem, ICo
         this.imgPath = imgPath;
     }
 
-    public static Product newInstance(Cursor cursor) {
+    public static ProductModel newInstance(Cursor cursor) {
         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
         Double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
         int count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
         String imgPath = cursor.getString(cursor.getColumnIndexOrThrow("img_path"));
-        long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+       // long id = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
         boolean isSaved = cursor.getInt(cursor.getColumnIndexOrThrow("is_saved")) != 0;
 
-        Product product = new Product();
-        product.setName(name);
-        product.setImagePath(imgPath);
-        product.setCount(count);
-        product.setPrice(price);
-        product.setId(id);
-        product.setSaved(isSaved);
+        ProductModel productModel = new ProductModel();
+        productModel.setName(name);
+        productModel.setImagePath(imgPath);
+        productModel.setCount(count);
+        productModel.setPrice(price);
+       // productModel.setId(id);
+        productModel.setSaved(isSaved);
 
-        return product;
+        return productModel;
+    }
+
+    public static ProductModel newInstance(ProductFirebase productFirebase) {
+
+        ProductModel productModel = new ProductModel();
+        productModel.setName(productFirebase.getName());
+        productModel.setImagePath(productFirebase.getImgPath());
+        productModel.setCount(productFirebase.getCount());
+        productModel.setPrice(productFirebase.getPrice());
+        productModel.setSaved(productFirebase.getSaved());
+        productModel.setIdentifier(productFirebase.getIdentifier());
+        productModel.setUserEmail(productFirebase.getUserEmail());
+
+        return productModel;
     }
 
     public ContentValues getValues() {
         ContentValues values = new ContentValues();
         values.put("name", name);
+        values.put("userEmail", userEmail);
+        values.put("identifier", identifier);
         values.put("price", price);
         values.put("count", count);
         values.put("img_path", imgPath);
         values.put("is_saved", isSaved ? 1 : 0);
         return values;
     }
+
+    public ProductFirebase getFirebaseInstance() {
+        return new ProductFirebase(identifier, name, price, count, isSaved, imgPath);
+    }
+
 }

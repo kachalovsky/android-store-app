@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.db;
+package fit.bstu.lab_05_06.db.sqllite;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,7 @@ import fit.bstu.lab_05_06.MainActivity;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
-import fit.bstu.lab_05_06.models.Product;
+import fit.bstu.lab_05_06.models.Product.ProductModel;
 
 /**
  * Created by andre on 15.10.2017.
@@ -30,6 +30,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
     private ProductsManager dbManager;
 
     public ProductsCursorAdapter(Context context, Cursor cursor, @LayoutRes int resource) {
+        
         super(context, cursor, 0);
         dbManager = new ProductsManager(context);
         this.mainContext = context;
@@ -59,15 +60,15 @@ public class ProductsCursorAdapter extends CursorAdapter {
         Button editBtn = (Button) view.findViewById(R.id.product_list_item_btn_edit);
         Button saveBtn = (Button) view.findViewById(R.id.product_list_item_btn_save);
 
-        Product product = Product.newInstance(cursor);
+        ProductModel productModel = ProductModel.newInstance(cursor);
 
-        saveBtn.setText(product.getSaved() ? "Unsave" : "Save");
+        saveBtn.setText(productModel.getSaved() ? "Unsave" : "Save");
 
         final ProductsCursorAdapter adapter = this;
 
         saveBtn.setOnClickListener(v -> {
-            product.setSaved(!product.getSaved());
-            dbManager.update(product, () -> {
+            productModel.setSaved(!productModel.getSaved());
+            dbManager.update(productModel, () -> {
                 MainActivity activity = (MainActivity) mainContext;
                 activity.refreshListViewByCurrentOrder((newCursor) -> {
                     changeCursor(newCursor);
@@ -77,7 +78,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
         });
 
         deleteBtn.setOnClickListener(v -> {
-            dbManager.delete(product, () -> {
+            dbManager.delete(productModel, () -> {
                 MainActivity activity = (MainActivity) mainContext;
                 activity.refreshListViewByCurrentOrder((newCursor) -> {
                     changeCursor(newCursor);
@@ -88,17 +89,17 @@ public class ProductsCursorAdapter extends CursorAdapter {
 
         editBtn.setOnClickListener(v -> {
             Intent intent = new Intent(mainContext, MainActivityOfChain.class);
-            intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, product);
+            intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, productModel);
             ((Activity)mainContext).startActivityForResult(intent, 0);
         });
 
-        double price = product.getPrice();
+        double price = productModel.getPrice();
         String priceStr = (price % 1 == 0) ? Integer.toString((int)price) : Double.toString(price);
 
-        String imgPath = product.getImagePath();
-        txtTitle.setText(product.getName());
+        String imgPath = productModel.getImagePath();
+        txtTitle.setText(productModel.getName());
         txtPrice.setText(priceStr + "$");
-        txtCount.setText(product.getCount().toString());
+        txtCount.setText(productModel.getCount().toString());
         if (imgPath != null) {
             imageView.setImageBitmap(BitmapFactory.decodeFile(imgPath));
         }

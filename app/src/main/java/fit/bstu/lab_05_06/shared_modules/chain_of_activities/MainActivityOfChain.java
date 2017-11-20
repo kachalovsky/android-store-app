@@ -3,11 +3,10 @@ package fit.bstu.lab_05_06.shared_modules.chain_of_activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
-import fit.bstu.lab_05_06.models.Product;
+import fit.bstu.lab_05_06.models.Product.ProductModel;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.architecture.ChainOfActivitiesController;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.count_fragment.CountInputFragment;
@@ -20,13 +19,13 @@ import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainPa
  * Created by andre on 04.10.2017.
  */
 
-public class MainActivityOfChain extends AppCompatActivity implements IChainParent<Product> {
+public class MainActivityOfChain extends AppCompatActivity implements IChainParent<ProductModel> {
 
     public static String CREATED_KEY = "RESULT_CREATED";
     public static String UPDATED_KEY = "RESULT_UPDATED";
     private String currentKey = CREATED_KEY;
     private ChainOfActivitiesController chainController;
-    private Product product = new Product();
+    private ProductModel productModel = new ProductModel();
     private boolean isCancelBehavior = true;
     private boolean isFinishBehavior = false;
     @Override
@@ -34,8 +33,9 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chain_main);
         setListeners();
-        Product sendedProduct = (Product) getIntent().getSerializableExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY);
-        if (sendedProduct != null) {product = sendedProduct; currentKey = UPDATED_KEY;}
+        ProductModel sendedProductModel = (ProductModel) getIntent().getSerializableExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY);
+        if (sendedProductModel != null) {
+            productModel = sendedProductModel; currentKey = UPDATED_KEY;}
         chainController = new ChainOfActivitiesController(this, R.id.frameLayout);
         chainController.appendChainItem(NameInputFragment.newInstance(this));
         chainController.appendChainItem(PriceInputFragment.newInstance(this));
@@ -63,7 +63,7 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
 
     private void finishWithData() {
         Intent intent = new Intent();
-        intent.putExtra(currentKey, product);
+        intent.putExtra(currentKey, productModel);
         setResult(RESULT_OK, intent);
         cancelActivity();
     }
@@ -73,12 +73,12 @@ public class MainActivityOfChain extends AppCompatActivity implements IChainPare
     }
 
     @Override
-    public void dataDidChange(Product item) {
-        product = item;
+    public void dataDidChange(ProductModel item) {
+        productModel = item;
     }
 
     @Override
-    public Product passData() { return product; }
+    public ProductModel passData() { return productModel; }
 
     @Override
     public boolean isFragmentCanChange(int previousFragment, int nextFragment, int countOfFragments) {
