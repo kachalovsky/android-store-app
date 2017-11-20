@@ -28,7 +28,7 @@ public class AuthManager {
     private static final AuthManager instance = new AuthManager();
     public static AuthManager getInstance() {return instance;}
     private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mAuth;
+    //private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ArrayList<ILogOut> logoutListeners = new ArrayList<>();
     private ArrayList<ISignIn> signInListeners = new ArrayList<>();
@@ -46,7 +46,7 @@ public class AuthManager {
     }
 
     private AuthManager() {
-        mAuth = FirebaseAuth.getInstance();
+        //mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
@@ -55,7 +55,7 @@ public class AuthManager {
                 notifyLogOut();
             }
         };
-        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
     }
 
     public void initialize(Context context) {
@@ -63,13 +63,13 @@ public class AuthManager {
     }
 
     public String getUserEmail() {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) return user.getEmail();
         return null;
     }
 
     public boolean tryLogin() {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             notifySignIn(user);
             return true;
@@ -93,23 +93,23 @@ public class AuthManager {
     }
 
     void signIn(AuthCredential credentials, IComplete completeClosure) {
-        mAuth.signInWithCredential(credentials).addOnCompleteListener(completeClosure::onComplete);
+        FirebaseAuth.getInstance().signInWithCredential(credentials).addOnCompleteListener(completeClosure::onComplete);
     }
 
     void signIn(EmailPassCredentials emailPassCredentials, IComplete completeClosure) {
-        mAuth.signInWithEmailAndPassword(emailPassCredentials.getEmail(), emailPassCredentials.getPassword()).addOnCompleteListener(completeClosure::onComplete);
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(emailPassCredentials.getEmail(), emailPassCredentials.getPassword()).addOnCompleteListener(completeClosure::onComplete);
     }
 
     void signUp(EmailPassCredentials emailPassCredentials, IComplete completeClosure) {
-        mAuth.createUserWithEmailAndPassword(emailPassCredentials.getEmail(), emailPassCredentials.getPassword()).addOnCompleteListener(completeClosure::onComplete);
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailPassCredentials.getEmail(), emailPassCredentials.getPassword()).addOnCompleteListener(completeClosure::onComplete);
     }
 
     public void logOut() {
-        mAuth.signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 
     void getGoogleAuthIntent(Activity activity) {
-            activity.startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient), Constants.RC_SIGN_IN);
+        activity.startActivityForResult(Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient), Constants.RC_SIGN_IN);
     }
 
     private GoogleApiClient getGoogleApiClient(Context context) {
@@ -126,6 +126,6 @@ public class AuthManager {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        mAuth.removeAuthStateListener(mAuthListener);
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
     }
 }

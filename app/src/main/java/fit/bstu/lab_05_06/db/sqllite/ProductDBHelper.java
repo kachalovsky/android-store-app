@@ -1,4 +1,4 @@
-package fit.bstu.lab_05_06.db;
+package fit.bstu.lab_05_06.db.sqllite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

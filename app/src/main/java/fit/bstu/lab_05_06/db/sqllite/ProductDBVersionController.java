@@ -1,9 +1,7 @@
-package fit.bstu.lab_05_06.db;
+package fit.bstu.lab_05_06.db.sqllite;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.ArrayMap;
-
-import fit.bstu.lab_05_06.models.Product;
 
 /**
  * Created by andre on 21.10.2017.
