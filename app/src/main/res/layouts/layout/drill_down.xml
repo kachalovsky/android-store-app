@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".shared_modules.drill_down.DrillDownController">
+
+    <ImageView
+        android:id="@+id/img_drill_down_cover"
+        android:layout_width="364dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/lbl_drill_down_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cart" />
+
+    <TextView
+        android:id="@+id/lbl_drill_down_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="14.5$"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_drill_down_name" />
+
+    <TextView
+        android:id="@+id/lbl_drill_down_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout8"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_drill_down_price">
+
+        <TextView
+            android:id="@+id/lbl_drill_down_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="Count: 15"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/lbl_drill_down_description"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:scrollbars="vertical"
+            android:text="udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu udfh sdhsdiu fsduihf suhfuosadfusdfhi usdf hsduoi fsdouifh sduo hfsuidof sdiufisdgfuisdfhuosdhfsidufgsiu "
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_drill_down_count" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

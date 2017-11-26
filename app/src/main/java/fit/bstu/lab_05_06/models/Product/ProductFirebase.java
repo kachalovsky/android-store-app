@@ -11,6 +11,16 @@ public class ProductFirebase {
     private Boolean isSaved = false;
     private String imgPath;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private String description;
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -32,13 +42,15 @@ public class ProductFirebase {
 
     public ProductFirebase() {}
 
-    public ProductFirebase(String identifier, String name, Double price, Integer count, Boolean isSaved, String imgPath) {
+    public ProductFirebase(String identifier, String name, Double price, Integer count, Boolean isSaved, String imgPath, String description) {
+
         this.identifier = identifier;
         this.name = name;
         this.price = price;
         this.count = count;
         this.isSaved = isSaved;
         this.imgPath = imgPath;
+        this.description = description;
     }
 
     public String getName() {

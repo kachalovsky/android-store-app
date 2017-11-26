@@ -56,42 +56,42 @@ public class ProductsCursorAdapter extends CursorAdapter {
         TextView txtCount = (TextView) view.findViewById(R.id.product_list_item_count);
         ImageView imageView = (ImageView) view.findViewById(R.id.product_list_item_img);
 
-        Button deleteBtn = (Button) view.findViewById(R.id.product_list_item_btn_del);
-        Button editBtn = (Button) view.findViewById(R.id.product_list_item_btn_edit);
-        Button saveBtn = (Button) view.findViewById(R.id.product_list_item_btn_save);
+//        Button deleteBtn = (Button) view.findViewById(R.id.product_list_item_btn_del);
+//        Button editBtn = (Button) view.findViewById(R.id.product_list_item_btn_edit);
+//        Button saveBtn = (Button) view.findViewById(R.id.product_list_item_btn_save);
 
         ProductModel productModel = ProductModel.newInstance(cursor);
 
-        saveBtn.setText(productModel.getSaved() ? "Unsave" : "Save");
+//        saveBtn.setText(productModel.getSaved() ? "Unsave" : "Save");
 
         final ProductsCursorAdapter adapter = this;
 
-        saveBtn.setOnClickListener(v -> {
-            productModel.setSaved(!productModel.getSaved());
-            dbManager.update(productModel, () -> {
-                MainActivity activity = (MainActivity) mainContext;
-                activity.refreshListViewByCurrentOrder((newCursor) -> {
-                    changeCursor(newCursor);
-                    notifyDataSetChanged();
-                });
-            });
-        });
-
-        deleteBtn.setOnClickListener(v -> {
-            dbManager.delete(productModel, () -> {
-                MainActivity activity = (MainActivity) mainContext;
-                activity.refreshListViewByCurrentOrder((newCursor) -> {
-                    changeCursor(newCursor);
-                    notifyDataSetChanged();
-                });
-            });
-        });
-
-        editBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(mainContext, MainActivityOfChain.class);
-            intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, productModel);
-            ((Activity)mainContext).startActivityForResult(intent, 0);
-        });
+//        saveBtn.setOnClickListener(v -> {
+//            productModel.setSaved(!productModel.getSaved());
+//            dbManager.update(productModel, () -> {
+//                MainActivity activity = (MainActivity) mainContext;
+//                activity.refreshListViewByCurrentOrder((newCursor) -> {
+//                    changeCursor(newCursor);
+//                    notifyDataSetChanged();
+//                });
+//            });
+//        });
+//
+//        deleteBtn.setOnClickListener(v -> {
+//            dbManager.delete(productModel, () -> {
+//                MainActivity activity = (MainActivity) mainContext;
+//                activity.refreshListViewByCurrentOrder((newCursor) -> {
+//                    changeCursor(newCursor);
+//                    notifyDataSetChanged();
+//                });
+//            });
+//        });
+//
+//        editBtn.setOnClickListener(v -> {
+//            Intent intent = new Intent(mainContext, MainActivityOfChain.class);
+//            intent.putExtra(BaseInputFragment.BUNDLE_ARGUMENT_KEY, productModel);
+//            ((Activity)mainContext).startActivityForResult(intent, 0);
+//        });
 
         double price = productModel.getPrice();
         String priceStr = (price % 1 == 0) ? Integer.toString((int)price) : Double.toString(price);

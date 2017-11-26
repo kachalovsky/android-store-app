@@ -35,20 +35,28 @@ public class NameInputFragment<Type extends INameInputItem> extends BaseInputFra
 
     protected void setTextBoxLister (View view) {
         EditText et = (EditText) view.findViewById(R.id.name_edit);
+        EditText descEdit = (EditText) view.findViewById(R.id.lbl_description);
         IChainParent delegate = getDelegate();
         if (delegate == null) return;
         et.setText(((INameInputItem) delegate.passData()).getName());
-        et.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                IChainParent delegate = getDelegate();
-                if (delegate == null) return false;
-                INameInputItem item = (INameInputItem) delegate.passData();
-                String name = ((EditText) v).getText().toString();
-                item.setName(name);
-                delegate.dataDidChange(item);
-                return false;
-            }
+        et.setOnKeyListener((v, keyCode, event) -> {
+            IChainParent delegate1 = getDelegate();
+            if (delegate1 == null) return false;
+            INameInputItem item = (INameInputItem) delegate1.passData();
+            String name = ((EditText) v).getText().toString();
+            item.setName(name);
+            delegate1.dataDidChange(item);
+            return false;
+        });
+
+        descEdit.setOnKeyListener((v, keyCode, event) -> {
+            IChainParent delegate1 = getDelegate();
+            if (delegate1 == null) return false;
+            INameInputItem item = (INameInputItem) delegate1.passData();
+            String name = ((EditText) v).getText().toString();
+            item.setDescription(name);
+            delegate1.dataDidChange(item);
+            return false;
         });
     }
 

@@ -9,4 +9,7 @@ import fit.bstu.lab_05_06.shared_modules.chain_of_activities.interfaces.IChainIt
 public interface INameInputItem extends IChainItem {
     String getName();
     void setName(String name);
+    String getDescription();
+    void setDescription(String name);
+
 }
