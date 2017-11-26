@@ -28,6 +28,16 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
     private Boolean isSaved = false;
     private String imgPath;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private String description;
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -40,9 +50,6 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
         return imgPath;
     }
 
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
-    }
 
     public Boolean getSaved() {
         return isSaved;
@@ -130,7 +137,7 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
         productModel.setSaved(productFirebase.getSaved());
         productModel.setIdentifier(productFirebase.getIdentifier());
         productModel.setUserEmail(productFirebase.getUserEmail());
-
+        productModel.setDescription(productFirebase.getDescription());
         return productModel;
     }
 
@@ -147,7 +154,7 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
     }
 
     public ProductFirebase getFirebaseInstance() {
-        return new ProductFirebase(identifier, name, price, count, isSaved, imgPath);
+        return new ProductFirebase(identifier, name, price, count, isSaved, imgPath, description);
     }
 
 }
