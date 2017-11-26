@@ -43,6 +43,7 @@ public class ProductFirebase {
     public ProductFirebase() {}
 
     public ProductFirebase(String identifier, String name, Double price, Integer count, Boolean isSaved, String imgPath, String description) {
+
         this.identifier = identifier;
         this.name = name;
         this.price = price;

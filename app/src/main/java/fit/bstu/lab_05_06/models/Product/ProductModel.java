@@ -50,7 +50,6 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
         return imgPath;
     }
 
-
     public Boolean getSaved() {
         return isSaved;
     }
@@ -138,6 +137,7 @@ public class ProductModel implements IChainItem, INameInputItem, IPriceInputItem
         productModel.setIdentifier(productFirebase.getIdentifier());
         productModel.setUserEmail(productFirebase.getUserEmail());
         productModel.setDescription(productFirebase.getDescription());
+      
         return productModel;
     }
 

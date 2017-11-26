@@ -119,6 +119,7 @@ public class ProductsListAdapter extends ArrayAdapter<ProductFirebase> {
             popup.getMenu().findItem(R.id.item_action_save).setTitle(productModel.getSaved() ? "Unsave" : "Save");
             popup.show();
         });
+
         return rowView;
 
     }
