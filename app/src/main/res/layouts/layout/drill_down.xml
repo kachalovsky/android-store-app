@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".shared_modules.drill_down.DrillDownController">
+    tools:context=".shared_modules.drill_down.DrillDownFragment">
 
     <ImageView
         android:id="@+id/img_drill_down_cover"
@@ -87,7 +87,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lbl_drill_down_count" />
+            app:layout_constraintTop_toBottomOf="@+id/lbl_drill_down_count"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

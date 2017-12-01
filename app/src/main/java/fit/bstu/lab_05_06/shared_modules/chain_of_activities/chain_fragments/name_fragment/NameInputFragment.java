@@ -48,7 +48,7 @@ public class NameInputFragment<Type extends INameInputItem> extends BaseInputFra
             delegate1.dataDidChange(item);
             return false;
         });
-
+        descEdit.setText(((INameInputItem) delegate.passData()).getDescription());
         descEdit.setOnKeyListener((v, keyCode, event) -> {
             IChainParent delegate1 = getDelegate();
             if (delegate1 == null) return false;

@@ -1,85 +1,80 @@
 package fit.bstu.lab_05_06;
 
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 
 import fit.bstu.lab_05_06.auth.AuthActivity;
 import fit.bstu.lab_05_06.auth.AuthManager;
 import fit.bstu.lab_05_06.db.firebase.FireBaseManager;
-import fit.bstu.lab_05_06.db.firebase.IFireBaseQueryProcess;
-import fit.bstu.lab_05_06.db.firebase.IFireBaseQueryResult;
-import fit.bstu.lab_05_06.db.sqllite.AsyncTasks.IAsyncReadCompletion;
-import fit.bstu.lab_05_06.models.Product.ProductFirebase;
-import fit.bstu.lab_05_06.products_list.ProductsListAdapter;
-import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.db.sqllite.AsyncTasks.IAsyncWriteCompletion;
-import fit.bstu.lab_05_06.db.sqllite.ProductsCursorAdapter;
 import fit.bstu.lab_05_06.db.sqllite.ProductsManager;
+import fit.bstu.lab_05_06.models.Product.ProductFirebase;
 import fit.bstu.lab_05_06.models.Product.ProductModel;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.architecture.ChainOfActivitiesController;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.count_fragment.CountInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.image_fragment.ImageInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.name_fragment.NameInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.price_fragment.PriceInputFragment;
 import fit.bstu.lab_05_06.shared_modules.drill_down.DrillDownController;
-import fit.bstu.lab_05_06.shared_modules.order_controller.OrderController;
+import fit.bstu.lab_05_06.shared_modules.drill_down.DrillDownFragment;
+import fit.bstu.lab_05_06.shared_modules.list_of_items.IListOfItemsBehavior;
+import fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems;
 
-public class MainActivity extends AppCompatActivity {
-    enum OrderType {
-        COUNT,
-        PRICE
+/**
+ * Created by andre on 27.11.2017.
+ */
+
+public class MainActivity extends AppCompatActivity implements IListOfItemsBehavior {
+
+    AuthManager authManager;
+    GoogleApiClient mGoogleApiClient;
+    ListOfItems retrievedFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        FragmentManager fragmentManager = getFragmentManager();
+        retrievedFragment = (ListOfItems)fragmentManager.findFragmentByTag("listViewFragment");
+        if(retrievedFragment == null) {
+            ListOfItems chainItem = new ListOfItems();
+            retrievedFragment = chainItem;
+            FragmentTransaction transManager = fragmentManager.beginTransaction();
+            transManager.add(R.id.list_fragment, chainItem, "listViewFragment");
+            transManager.commit();
+        }
+        retrievedFragment.setDelegate(this);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            FragmentTransaction transManager = fragmentManager.beginTransaction();
+            transManager.add(R.id.drill_down_fragment, new DrillDownFragment());
+            transManager.commit();
+        }
     }
 
-    ProductsCursorAdapter productAdapter;
-    ListView productsListView;
-    ProductsManager dbManager;
-    String currentWhereField = null;
-    AuthManager authManager;
-    OrderController<OrderType> priceOrderController;
-    OrderController<OrderType> countOrderController;
-    OrderController<OrderType> currentOrderController;
-    GoogleApiClient mGoogleApiClient;
-    final MainActivity controller = this;
-    IFireBaseQueryProcess currentFirebaseProcess = null;
-    IFireBaseQueryResult fireBaseCompletion = new IFireBaseQueryResult() {
-        @Override
-        public void onResult(ArrayList<ProductFirebase> list) {
-            productsListView = (ListView)findViewById(R.id.listView);
-            ProductsListAdapter adapter;
-            if (productsListView.getAdapter() == null) {
-                adapter = new ProductsListAdapter(controller, R.layout.product_list_item);
-                productsListView.setAdapter(adapter);
-            } else adapter = (ProductsListAdapter)productsListView.getAdapter();
-            adapter.listOfProductModels = list;
-            adapter.notifyDataSetChanged();
-        }
-    };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // store the data in the fragment
+        retrievedFragment.setDelegate(this);
+    }
 
     @Override
     protected void onStart() {
@@ -92,115 +87,14 @@ public class MainActivity extends AppCompatActivity {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        // Read from the database
-        FireBaseManager.getDbReference().addValueEventListener(new ValueEventListener() {
-            String TAG = "111";
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                fireBaseCompletion.onResult(FireBaseManager.createProductsList(dataSnapshot));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        authManager = AuthManager.getInstance();
-        setContentView(R.layout.activity_main);
-        dbManager = new ProductsManager(this);
-        priceOrderController = new OrderController(OrderType.PRICE, "Price");
-        countOrderController = new OrderController(OrderType.COUNT, "Count");
-        currentOrderController = priceOrderController;
-        prepareListOfProducts();
-        setListenersForOrderBtns();
-        setTitle("Hello, " + authManager.getUserEmail());
-    }
-
-    private void prepareListOfProducts() {
-        productsListView = (ListView)findViewById(R.id.listView);
-        productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(controller, DrillDownController.class);
-                intent.putExtra(DrillDownController.BUNDLE_ARGUMENT_KEY, ProductModel.newInstance(((ProductsListAdapter)productsListView.getAdapter()).listOfProductModels.get(position)));
-                startActivity(intent);
-            }
-        });
-        productsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        productsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                ProductsListAdapter adapter = (ProductsListAdapter) productsListView.getAdapter();
-                if (checked) adapter.selectedItems.add(adapter.listOfProductModels.get(position).getIdentifier());
-                else adapter.selectedItems.remove(adapter.listOfProductModels.get(position).getIdentifier());
-                refreshListViewByCurrentOrder(newCursor -> {
-//                productAdapter.changeCursor(newCursor);
-//                productAdapter.notifyDataSetChanged();
-                });
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.context_menu, menu);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                ProductsListAdapter adapter = (ProductsListAdapter) productsListView.getAdapter();
-                switch(item.getItemId()) {
-                    case R.id.cab_save:
-                        for (String identifier : adapter.selectedItems) {
-                            FirebaseDatabase.getInstance().getReference("products").child(identifier).child("saved").setValue(true);
-                        }
-                        break;
-                    case R.id.cab_delete:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(controller);
-
-                        builder.setMessage("Do you sure that you want to delete this item(s)? It is PERMANENT operation.")
-                                .setTitle("WARNING");
-
-                        builder.setPositiveButton("Cancel", (DialogInterface.OnClickListener) (dialog, id) -> {
-                            // User clicked OK button
-                        });
-                        builder.setNegativeButton("Delete", (DialogInterface.OnClickListener) (dialog, id) -> {
-                            for (String identifier : adapter.selectedItems) {
-                                FirebaseDatabase.getInstance().getReference("products").child(identifier).removeValue();
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-
-                        dialog.show();
-                        break;
-                }
-
-                adapter.selectedItems.clear();
-                return true;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_menu, menu);
+        authManager = AuthManager.getInstance();
         return true;
     }
 
@@ -243,86 +137,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setListenersForOrderBtns() {
-        Button priceBtn = (Button)findViewById(R.id.btn_sort_price);
-        Button countBtn = (Button)findViewById(R.id.btn_sort_count);
-        Button saveBtn = (Button)findViewById(R.id.btn_sort_save);
-        priceBtn.setOnClickListener(v -> {
-            currentOrderController = priceOrderController;
-            currentOrderController.nextState();
-            refreshListViewByCurrentOrder(newCursor -> {
-//                productAdapter.changeCursor(newCursor);
-//                productAdapter.notifyDataSetChanged();
-            });
-        });
-        countBtn.setOnClickListener(v -> {
-            currentOrderController = countOrderController;
-            currentOrderController.nextState();
-            refreshListViewByCurrentOrder(newCursor -> {
-                productAdapter.swapCursor(newCursor);
-            });
-        });
-        saveBtn.setOnClickListener(v -> {
-            if (currentFirebaseProcess == null) {
-                currentFirebaseProcess = list -> {
-                    ArrayList<ProductFirebase> filtered = new ArrayList<>();
-                    for (ProductFirebase item: list) {
-                        if(item.getSaved()) filtered.add(item);
-                    }
-                    return  filtered;
-                };
-                v.setBackgroundColor(getResources().getColor(R.color.colorPicker));
-            }
-            else {
-                currentFirebaseProcess = null;
-                v.setBackgroundColor(getResources().getColor(R.color.transparent));
-
-            }
-            refreshListViewByCurrentOrder(newCursor -> {
-                productAdapter.swapCursor(newCursor);
-            });
-        });
-    }
-
-    private void refreshListViewByOrder(String orderItem, OrderController.States state, IAsyncReadCompletion completion) {
-        switch (state) {
-            case UP:
-                FireBaseManager.query(orderItem, false, currentFirebaseProcess, fireBaseCompletion);
-                break;
-            case DOWN:
-                FireBaseManager.query(orderItem, true, currentFirebaseProcess, fireBaseCompletion);
-                break;
-            case UNSELECT:
-                FireBaseManager.query("identifier", false, currentFirebaseProcess, fireBaseCompletion);
-                break;
-        }
-    }
-
-    public void refreshListViewByCurrentOrder(IAsyncReadCompletion completion) {
-        switch (currentOrderController.getOrderType()) {
-            case PRICE:
-                refreshListViewByOrder("price", currentOrderController.getState(), completion);
-                Button btnPrice = (Button) findViewById(R.id.btn_sort_price);
-                btnPrice.setText(currentOrderController.getOrderName());
-                break;
-            case COUNT:
-                refreshListViewByOrder("count", currentOrderController.getState(), completion);
-                Button btnCount = (Button) findViewById(R.id.btn_sort_count);
-                btnCount.setText(currentOrderController.getOrderName());
-                break;
-        }
-    }
-
-    @Override
+        @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
         Serializable createdProduct = data.getSerializableExtra(MainActivityOfChain.CREATED_KEY);
         Serializable editedProduct = data.getSerializableExtra(MainActivityOfChain.UPDATED_KEY);
         IAsyncWriteCompletion copmletion = () -> {
-            refreshListViewByCurrentOrder((newCursor) -> {
-                productAdapter.changeCursor(newCursor);
-                productAdapter.notifyDataSetChanged();
-            });
+//            refreshListViewByCurrentOrder((newCursor) -> {
+//                productAdapter.changeCursor(newCursor);
+//                productAdapter.notifyDataSetChanged();
+//            });
         };
         if (createdProduct != null) {
             ProductModel productModel = (ProductModel)createdProduct;
@@ -331,13 +155,31 @@ public class MainActivity extends AppCompatActivity {
             ProductFirebase dbModel = productModel.getFirebaseInstance();
             dbModel.setUserEmail(authManager.getUserEmail());
             FireBaseManager.getDbReference().child(id).setValue(dbModel);
-            dbManager.insert(productModel, copmletion);
+            //dbManager.insert(productModel, copmletion);
         }
 
         if (editedProduct != null) {
             ProductModel productModel = (ProductModel)editedProduct;
             FireBaseManager.getDbReference().child(productModel.getIdentifier()).setValue(productModel.getFirebaseInstance());
-            dbManager.update(productModel, copmletion);
+            //dbManager.update(productModel, copmletion);
         }
+    }
+
+    @Override
+    public void itemDidSelected(ProductFirebase product) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Intent intent = new Intent(this, DrillDownController.class);
+            intent.putExtra(DrillDownController.BUNDLE_ARGUMENT_KEY, ProductModel.newInstance(product));
+            startActivity(intent);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            DrillDownFragment chainItem = new DrillDownFragment();
+            chainItem.setProductModel(ProductModel.newInstance(product));
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction transManager = fragmentManager.beginTransaction();
+            transManager.replace(R.id.drill_down_fragment, chainItem);
+            transManager.addToBackStack(null);
+            transManager.commit();
+        }
+
     }
 }

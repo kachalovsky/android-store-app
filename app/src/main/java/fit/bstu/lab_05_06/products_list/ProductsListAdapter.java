@@ -5,15 +5,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.util.Base64;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -24,12 +25,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import fit.bstu.lab_05_06.MainActivity;
 import fit.bstu.lab_05_06.models.Product.ProductFirebase;
 import fit.bstu.lab_05_06.models.Product.ProductModel;
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
 import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
+import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.image_fragment.IImageInputItem;
 
 /**
  * Created by andre on 12.10.2017.
@@ -69,17 +70,26 @@ public class ProductsListAdapter extends ArrayAdapter<ProductFirebase> {
 
         ImageButton btnMore = (ImageButton) rowView.findViewById(R.id.btn_more);
 
+        ConstraintLayout offsetView = (ConstraintLayout) rowView.findViewById(R.id.item_offset);
+
         txtTitle.setText(productModel.getName());
         txtPrice.setText(productModel.getPrice().toString() + "$");
         txtCount.setText(productModel.getCount().toString());
-        if (productModel.getImgPath() != null) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(productModel.getImgPath()));
+        String imgBase64 = productModel.getImgPath();
+        if (imgBase64 != null) {
+            byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imageView.setImageBitmap(decodedByte);
         }
         if (!selectedItems.contains(productModel.getIdentifier())) {
             imageChecked.setVisibility(View.INVISIBLE);
         }
         if(!productModel.getSaved()) {
             imageSaved.setVisibility(View.INVISIBLE);
+        }
+
+        if (position == listOfProductModels.size() - 1) {
+            offsetView.setMaxHeight(0);
         }
 
         btnMore.setOnClickListener(v -> {

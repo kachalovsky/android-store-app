@@ -1,23 +1,19 @@
 package fit.bstu.lab_05_06.db.sqllite;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.LayoutRes;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import fit.bstu.lab_05_06.MainActivity;
 import fit.bstu.lab_05_06.R;
-import fit.bstu.lab_05_06.shared_modules.chain_of_activities.MainActivityOfChain;
-import fit.bstu.lab_05_06.shared_modules.chain_of_activities.chain_fragments.BaseInputFragment;
 import fit.bstu.lab_05_06.models.Product.ProductModel;
 
 /**
@@ -69,7 +65,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
 //        saveBtn.setOnClickListener(v -> {
 //            productModel.setSaved(!productModel.getSaved());
 //            dbManager.update(productModel, () -> {
-//                MainActivity activity = (MainActivity) mainContext;
+//                ListOfItems activity = (ListOfItems) mainContext;
 //                activity.refreshListViewByCurrentOrder((newCursor) -> {
 //                    changeCursor(newCursor);
 //                    notifyDataSetChanged();
@@ -79,7 +75,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
 //
 //        deleteBtn.setOnClickListener(v -> {
 //            dbManager.delete(productModel, () -> {
-//                MainActivity activity = (MainActivity) mainContext;
+//                ListOfItems activity = (ListOfItems) mainContext;
 //                activity.refreshListViewByCurrentOrder((newCursor) -> {
 //                    changeCursor(newCursor);
 //                    notifyDataSetChanged();
@@ -100,8 +96,11 @@ public class ProductsCursorAdapter extends CursorAdapter {
         txtTitle.setText(productModel.getName());
         txtPrice.setText(priceStr + "$");
         txtCount.setText(productModel.getCount().toString());
-        if (imgPath != null) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(imgPath));
+        String imgBase64 = productModel.getImgPath();
+        if (imgBase64 != null) {
+            byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            imageView.setImageBitmap(decodedByte);
         }
     }
 }
