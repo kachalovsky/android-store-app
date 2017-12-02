@@ -1,11 +1,8 @@
 package fit.bstu.lab_05_06.auth;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -13,18 +10,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import fit.bstu.lab_05_06.Constants;
 import fit.bstu.lab_05_06.MainActivity;
+import fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems;
 import fit.bstu.lab_05_06.R;
 
 /**
@@ -33,8 +27,19 @@ import fit.bstu.lab_05_06.R;
 
 public class AuthActivity extends AppCompatActivity {
 
+    private static boolean RESUME_FROM_BACKGROUND = false;
     private AuthManager authManager;
     ISignIn listener;
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(RESUME_FROM_BACKGROUND) {
+            authManager.tryLogin();
+        } else {
+            RESUME_FROM_BACKGROUND = true;
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -42,6 +47,7 @@ public class AuthActivity extends AppCompatActivity {
         authManager = AuthManager.getInstance();
         authManager.initialize(this);
         listener = (user) -> {
+            finish();
             Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);
         };

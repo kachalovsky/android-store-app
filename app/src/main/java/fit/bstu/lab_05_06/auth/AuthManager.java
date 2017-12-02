@@ -28,7 +28,6 @@ public class AuthManager {
     private static final AuthManager instance = new AuthManager();
     public static AuthManager getInstance() {return instance;}
     private GoogleApiClient mGoogleApiClient;
-    //private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ArrayList<ILogOut> logoutListeners = new ArrayList<>();
     private ArrayList<ISignIn> signInListeners = new ArrayList<>();
