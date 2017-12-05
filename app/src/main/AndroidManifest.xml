@@ -18,14 +18,17 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".shared_modules.drill_down.DrillDownController"></activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".shared_modules.chain_of_activities.MainActivityOfChain"></activity>
-        <activity android:name=".auth.AuthActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".shared_modules.chain_of_activities.MainActivityOfChain"></activity>
+        <activity android:name=".auth.AuthActivity">
+
         </activity>
     </application>
 

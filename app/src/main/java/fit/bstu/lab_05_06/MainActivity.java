@@ -6,8 +6,14 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,7 +48,7 @@ import fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems;
  * Created by andre on 27.11.2017.
  */
 
-public class MainActivity extends AppCompatActivity implements IListOfItemsBehavior {
+public class MainActivity extends AppCompatActivity implements IListOfItemsBehavior, NavigationView.OnNavigationItemSelectedListener {
 
     AuthManager authManager;
     GoogleApiClient mGoogleApiClient;
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements IListOfItemsBehav
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_drawer);
         FragmentManager fragmentManager = getFragmentManager();
         retrievedFragment = (ListOfItems)fragmentManager.findFragmentByTag("listViewFragment");
         if(retrievedFragment == null) {
@@ -67,6 +73,17 @@ public class MainActivity extends AppCompatActivity implements IListOfItemsBehav
             transManager.add(R.id.drill_down_fragment, new DrillDownFragment());
             transManager.commit();
         }
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override
@@ -90,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements IListOfItemsBehav
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -98,42 +116,49 @@ public class MainActivity extends AppCompatActivity implements IListOfItemsBehav
         return true;
     }
 
+    private void logout() {
+        authManager.logOut();
+        Intent loginIntent = new Intent(this, AuthActivity.class);
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        } else {
+            mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(@Nullable Bundle bundle) {
+                    try{
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+
+                @Override
+                public void onConnectionSuspended(int i) {
+
+                }
+            });
+            mGoogleApiClient.connect();
+        }
+
+        startActivity(loginIntent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        int k = item.getItemId();
         switch (item.getItemId()) {
             case R.id.action_add:
                 Intent intent = new Intent(this, MainActivityOfChain.class);
                 startActivityForResult(intent, 0);
                 return true;
             case R.id.action_logout:
-                authManager.logOut();
-                Intent loginIntent = new Intent(this, AuthActivity.class);
-                if (mGoogleApiClient.isConnected()) {
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                } else {
-                    mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                        @Override
-                        public void onConnected(@Nullable Bundle bundle) {
-                            try{
-                                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                            } catch (Exception e) {
-                                System.out.println(e);
-                            }
-                        }
-
-                        @Override
-                        public void onConnectionSuspended(int i) {
-
-                        }
-                    });
-                    mGoogleApiClient.connect();
-                }
-
-                startActivity(loginIntent);
+                logout();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+               // drawer.onO
+                return true;
         }
     }
 
@@ -181,5 +206,25 @@ public class MainActivity extends AppCompatActivity implements IListOfItemsBehav
             transManager.commit();
         }
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_collection:
+                return true;
+            case R.id.nav_cards:
+                return true;
+            case R.id.nav_list:
+                return true;
+            case R.id.nav_table:
+                return true;
+            case R.id.nav_logout:
+                logout();
+                return true;
+            default:
+                return false;
+
+        }
     }
 }
