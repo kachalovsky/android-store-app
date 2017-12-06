@@ -18,7 +18,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import fit.bstu.lab_05_06.Constants;
 import fit.bstu.lab_05_06.MainActivity;
-import fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems;
 import fit.bstu.lab_05_06.R;
 
 /**

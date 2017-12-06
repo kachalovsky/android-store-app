@@ -1,11 +1,10 @@
-package fit.bstu.lab_05_06.shared_modules.list_of_items;
+package fit.bstu.lab_05_06.shared_modules.items_content.fragments.list_view;
 
 
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -37,23 +36,17 @@ import fit.bstu.lab_05_06.models.Product.ProductFirebase;
 import fit.bstu.lab_05_06.products_list.ProductsListAdapter;
 import fit.bstu.lab_05_06.db.sqllite.ProductsCursorAdapter;
 import fit.bstu.lab_05_06.db.sqllite.ProductsManager;
-import fit.bstu.lab_05_06.models.Product.ProductModel;
-import fit.bstu.lab_05_06.shared_modules.drill_down.DrillDownFragment;
+import fit.bstu.lab_05_06.shared_modules.items_content.behavior.IItemsContentDelegate;
+import fit.bstu.lab_05_06.shared_modules.items_content.fragments.BaseFragment;
 import fit.bstu.lab_05_06.shared_modules.order_controller.OrderController;
 
 
 
-public class ListOfItems extends Fragment {
+public class ListFragment extends BaseFragment {
     enum OrderType {
         COUNT,
         PRICE
     }
-
-    public void setDelegate(IListOfItemsBehavior delegate) {
-        this.delegate = delegate;
-    }
-
-    IListOfItemsBehavior delegate;
     Context context;
     ProductsCursorAdapter productAdapter;
     ListView productsListView;
