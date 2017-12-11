@@ -9,18 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.models.Product.ProductFirebase;
+import fit.bstu.lab_05_06.shared_modules.items_content.behavior.IItemsContentDelegate;
 
 /**
  * Created by andre on 05.12.2017.
  */
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.PersonViewHolder> {
+
+    IItemsContentDelegate delegate;
+    int itemViewId;
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
         ImageView coverImage;
@@ -36,8 +39,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(List<ProductFirebase> products) {
+    public RecyclerViewAdapter(List<ProductFirebase> products, IItemsContentDelegate delegate, int itemViewId) {
         this.products = products;
+        this.delegate = delegate;
+        this.itemViewId = itemViewId;
     }
 
     public void setProducts(List<ProductFirebase> products) {
@@ -48,11 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public PersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_recycler_item, parent, false);
-        v.setOnClickListener(v1 -> {
-                int itemPosition = mRecyclerView.getChildLayoutPosition(v1);
-                ProductFirebase item = products.get(itemPosition);
-        });
+        View v = LayoutInflater.from(parent.getContext()).inflate(itemViewId, parent, false);
         PersonViewHolder pvh = new PersonViewHolder(v);
         return pvh;
     }
@@ -68,6 +69,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.coverImage.setImageBitmap(decodedByte);
         }
+        holder.itemView.setOnClickListener(v -> {
+            delegate.itemDidSelected(product);
+        });
     }
 
     @Override

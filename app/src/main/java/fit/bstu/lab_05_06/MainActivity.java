@@ -11,10 +11,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -89,6 +93,13 @@ public class MainActivity extends AppCompatActivity implements IItemsContentDele
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        View hView =  navigationView.getHeaderView(0);
+        if (hView != null) {
+            TextView userEmail = (TextView)hView.findViewById(R.id.email);
+            userEmail.setText(AuthManager.getInstance().getUserEmail());
+        }
+
     }
 
     @Override
@@ -217,14 +228,18 @@ public class MainActivity extends AppCompatActivity implements IItemsContentDele
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_collection:
-                return true;
-            case R.id.nav_cards:
-                replaceContent(new RecyclerFragment());
+                RecyclerFragment recyclerGridFragment = new RecyclerFragment();
+                recyclerGridFragment.setItemViewId(R.layout.product_recycler_collection_item);
+                replaceContent(recyclerGridFragment);
                 return true;
             case R.id.nav_list:
                 replaceContent(new ListFragment());
                 return true;
             case R.id.nav_table:
+                RecyclerFragment recyclerFragment = new RecyclerFragment();
+                recyclerFragment.setItemViewId(R.layout.product_recycler_linear_item);
+                recyclerFragment.setContentType(RecyclerFragment.ContentTypes.Table);
+                replaceContent(recyclerFragment);
                 return true;
             case R.id.nav_logout:
                 logout();
