@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import fit.bstu.lab_05_06.R;
 import fit.bstu.lab_05_06.models.Product.ProductModel;
-import fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems;
 
 /**
  * Created by andre on 01.12.2017.

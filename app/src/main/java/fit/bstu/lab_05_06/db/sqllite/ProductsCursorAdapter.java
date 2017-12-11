@@ -65,7 +65,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
 //        saveBtn.setOnClickListener(v -> {
 //            productModel.setSaved(!productModel.getSaved());
 //            dbManager.update(productModel, () -> {
-//                ListOfItems activity = (ListOfItems) mainContext;
+//                ListFragment activity = (ListFragment) mainContext;
 //                activity.refreshListViewByCurrentOrder((newCursor) -> {
 //                    changeCursor(newCursor);
 //                    notifyDataSetChanged();
@@ -75,7 +75,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
 //
 //        deleteBtn.setOnClickListener(v -> {
 //            dbManager.delete(productModel, () -> {
-//                ListOfItems activity = (ListOfItems) mainContext;
+//                ListFragment activity = (ListFragment) mainContext;
 //                activity.refreshListViewByCurrentOrder((newCursor) -> {
 //                    changeCursor(newCursor);
 //                    notifyDataSetChanged();

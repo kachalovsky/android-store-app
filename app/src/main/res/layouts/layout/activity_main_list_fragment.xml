@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fit.bstu.lab_05_06.shared_modules.list_of_items.ListOfItems">
+    tools:context=".shared_modules.items_content.fragments.list_view.ListFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
